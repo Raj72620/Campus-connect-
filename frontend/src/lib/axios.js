@@ -2,12 +2,13 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const resolveBaseURL = () => {
-  // Allow explicit override at build time
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  // During local dev (Vite) requests originate from port 5173. Backend runs on 5000 by default.
-  if (import.meta.env.DEV) return 'http://localhost:5000/api';
-  // In production use a relative API path so local development and
-  // production that serves the frontend from the same origin both work.
+  // In development, allow explicit override or default to localhost
+  if (import.meta.env.DEV) {
+    return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  }
+
+  // In production, always use relative path '/api' to leverage the Netlify proxy.
+  // This avoids CORS issues and ensures cookies work correctly.
   return '/api';
 };
 

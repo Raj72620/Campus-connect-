@@ -3,10 +3,13 @@ import { io } from 'socket.io-client';
 let socket;
 
 export function initSocket(token) {
-  // In production, fallback to '/' relative path to use the Netlify proxy
-  // In dev, fallback to localhost:5000
-  const fallback = import.meta.env.DEV ? 'http://localhost:5000' : '/';
-  socket = io(import.meta.env.VITE_API_URL || fallback, {
+  // In production, use '/' relative path to leverage Netlify proxy
+  // In dev, use VITE_API_URL or localhost:5000
+  const url = import.meta.env.DEV
+    ? (import.meta.env.VITE_API_URL || 'http://localhost:5000')
+    : '/';
+
+  socket = io(url, {
     auth: { token },
   });
   return socket;
